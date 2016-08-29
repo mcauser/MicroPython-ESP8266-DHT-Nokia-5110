@@ -467,6 +467,14 @@ Display the temperature and humidity on the Nokia 5110 display, updated every 4 
 >>> import am2320_nokia
 ```
 
+## Links
+
+* [WeMos D1 Mini](http://www.wemos.cc/Products/d1_mini.html)
+* [micropython.org](http://micropython.org)
+* [HSPI docs](http://docs.micropython.org/en/latest/esp8266/esp8266/quickref.html#hardware-spi)
+* [micropython issue](https://github.com/micropython/micropython/issues/2290)
+* [hackaday project](https://hackaday.io/project/13363-dht12-am2320-nokia-5110)
+
 ## Credits
 
 * Markus Birth's [wipy Nokia 5110 library](https://github.com/mbirth/wipy-upcd8544) (MIT license) with [my ESP8266 modifications](https://github.com/mbirth/wipy-upcd8544/issues/1).
