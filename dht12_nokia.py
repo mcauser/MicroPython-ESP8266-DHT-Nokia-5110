@@ -13,7 +13,7 @@ i2c = I2C(scl=Pin(0), sda=Pin(2), freq=20000)
 i2c.scan()
 # should see sensor at [92]
 
-dht = DHT12(i2c)
+dht = dht12.DHT12(i2c)
 
 # Initialise HSPI for display
 spi = HSPI(baudrate=80000000, polarity=0, phase=0)
