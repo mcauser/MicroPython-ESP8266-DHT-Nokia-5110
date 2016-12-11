@@ -310,11 +310,11 @@ G                       | 7 Gnd                  | Ground
 Test the display:
 
 ```
->>> from machine import Pin, HSPI
+>>> from machine import Pin, SPI
 >>> import time
 >>> import upcd8544
 
->>> spi = HSPI(baudrate=80000000, polarity=0, phase=0)
+>>> spi = SPI(1, baudrate=80000000, polarity=0, phase=0)
 >>> RST = Pin(4)
 >>> CE = Pin(5)
 >>> DC = Pin(12)
@@ -471,7 +471,7 @@ Display the temperature and humidity on the Nokia 5110 display, updated every 4 
 
 * [WeMos D1 Mini](http://www.wemos.cc/Products/d1_mini.html)
 * [micropython.org](http://micropython.org)
-* [HSPI docs](http://docs.micropython.org/en/latest/esp8266/esp8266/quickref.html#hardware-spi)
+* [Hardware SPI docs](http://docs.micropython.org/en/latest/esp8266/esp8266/quickref.html#hardware-spi-bus)
 * [micropython issue](https://github.com/micropython/micropython/issues/2290)
 * [hackaday project](https://hackaday.io/project/13363-dht12-am2320-nokia-5110)
 

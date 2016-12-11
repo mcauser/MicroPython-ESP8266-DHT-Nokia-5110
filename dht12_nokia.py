@@ -16,7 +16,7 @@ i2c.scan()
 dht = dht12.DHT12(i2c)
 
 # Initialise HSPI for display
-spi = HSPI(baudrate=80000000, polarity=0, phase=0)
+spi = SPI(1, baudrate=80000000, polarity=0, phase=0)
 RST = Pin(4)
 CE = Pin(5)
 DC = Pin(12)
