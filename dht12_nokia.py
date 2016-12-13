@@ -1,5 +1,5 @@
 import time, ustruct
-from machine import I2C, Pin, HSPI
+from machine import I2C, Pin, SPI
 
 # Nokia 5110
 import upcd8544, framebuf
@@ -7,7 +7,7 @@ import upcd8544, framebuf
 # Temp sensor
 import dht12
 
-# Initialise temp sensor
+# Initialise I2C for temp sensor
 i2c = I2C(scl=Pin(0), sda=Pin(2), freq=20000)
 
 i2c.scan()
@@ -15,7 +15,7 @@ i2c.scan()
 
 dht = dht12.DHT12(i2c)
 
-# Initialise HSPI for display
+# Initialise SPI for display
 spi = SPI(1, baudrate=80000000, polarity=0, phase=0)
 RST = Pin(4)
 CE = Pin(5)
