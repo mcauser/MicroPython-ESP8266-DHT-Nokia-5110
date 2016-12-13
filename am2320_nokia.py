@@ -1,5 +1,5 @@
 import time, ustruct
-from machine import I2C, Pin, HSPI
+from machine import I2C, Pin, SPI
 
 # Nokia 5110
 import upcd8544, framebuf
