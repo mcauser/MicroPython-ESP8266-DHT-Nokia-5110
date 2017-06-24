@@ -22,10 +22,10 @@ The DHT12 and AM2320 sensors have the same pins:
 * 3 GND
 * 4 SCL
 
-Using D3 + D4 for I2C on the WeMos D1 Mini.
+Using D1 + D2 for I2C on the WeMos D1 Mini.
 
-* D3 = GPIO0 = SCL
-* D4 = GPIO2 = SDA
+* D1 = GPIO5 = SCL
+* D2 = GPIO4 = SDA
 
 
 ## Installation
@@ -265,9 +265,9 @@ WebREPL connected
 
 ### Upload files with WebREPL
 
-Under `Send a file` on the right, choose the file `upcd8544.py`. It will list the file as `upcd8544.py - 9787 bytes`.
+Under `Send a file` on the right, choose the file `pcd8544.py`. It will list the file as `pcd8544.py - 9787 bytes`.
 
-Click `Send to device`. At the bottom it should say `Sent upcd8544.py, 9787 bytes`.
+Click `Send to device`. At the bottom it should say `Sent pcd8544.py, 9787 bytes`.
 
 Repeat for the files `dht12.py`, `dht12_nokia.py`, `am2320.py` and `am2320_nokia.py`.
 
@@ -298,13 +298,13 @@ Connections:
 
 WeMos D1 Mini (ESP8266) | Nokia 5110 PCD8544 LCD | Description
 ----------------------- | ---------------------- | ----------------------------------------------
-D2 (GPIO4)              | 0 RST                  | Output from ESP to reset display
-D1 (GPIO5)              | 1 CE                   | Output from ESP to chip select/enable display
-D6 (GPIO12)             | 2 DC                   | Output from display data/command to ESP
+D3 (GPIO0)              | 0 RST                  | Output from ESP to reset display
+D4 (GPIO2)              | 1 CE                   | Output from ESP to chip select/enable display
+D8 (GPIO15)             | 2 DC                   | Output from display data/command to ESP
 D7 (GPIO13)             | 3 Din                  | Output from ESP SPI MOSI to display data input
 D5 (GPIO14)             | 4 Clk                  | Output from ESP SPI clock
 3V3                     | 5 Vcc                  | 3.3V from ESP to display
-D0 (GPIO16)             | 6 BL                   | 3.3V to turn backlight on, or PWM
+D6 (GPIO12)             | 6 BL                   | 3.3V to turn backlight on, or PWM
 G                       | 7 Gnd                  | Ground
 
 Test the display:
@@ -312,39 +312,36 @@ Test the display:
 ```
 >>> from machine import Pin, SPI
 >>> import time
->>> import upcd8544
+>>> import pcd8544
 
 >>> spi = SPI(1, baudrate=80000000, polarity=0, phase=0)
->>> RST = Pin(4)
->>> CE = Pin(5)
->>> DC = Pin(12)
->>> BL = Pin(16)
->>> lcd = upcd8544.PCD8544(spi, RST, CE, DC, BL)
-```
 
-For my Nokia 5110 display, the `lcd.light_on()` and `lcd.light_off()` methods are reversed.
+>>> cs = Pin(2)
+>>> dc = Pin(15)
+>>> rst = Pin(0)
+
+>>> bl = Pin(12, Pin.OUT, value=1)
+>>> lcd = pcd8544.PCD8544(spi, cs, dc, rst)
+```
 
 Switch off the backlight:
 
 ```
->>> lcd.light_on()
+>>> bl.value(0)
 ```
 
 Switch on the backlight:
 
 ```
->>> lcd.light_off()
+>>> bl.value(1)
 ```
 
 Use a framebuffer to store the 4032 pixels (84x48):
 
 ```
 >>> import framebuf
->>> width = 84
->>> height = 48
->>> pages = height // 8
->>> buffer = bytearray(pages * width)
->>> framebuf = framebuf.FrameBuffer1(buffer, width, height)
+>>> buffer = bytearray((lcd.height // 8) * lcd.width)
+>>> framebuf = framebuf.FrameBuffer1(buffer, lcd.width, lcd.height)
 ```
 
 Light every pixel:
@@ -389,8 +386,8 @@ Connections:
 WeMos D1 Mini (ESP8266) | DHT12  | Description
 ----------------------- | ------ | ------------
 3V3                     | 1 VDD  | 3.3V
-D4 (GPIO2)              | 2 SDA  | Serial data
-D3 (GPIO0)              | 3 SCL  | Serial clock
+D2 (GPIO4)              | 2 SDA  | Serial data
+D1 (GPIO5)              | 3 SCL  | Serial clock
 G                       | 4 GND  | Ground
 
 Connect two pull-up resistors for I2C between 3V3-SDA and 3V3-SCL.
@@ -401,7 +398,7 @@ Test the DHT12 sensor:
 >>> from machine import I2C, Pin
 >>> import dht12
 
->>> i2c = I2C(scl=Pin(0), sda=Pin(2), freq=20000)
+>>> i2c = I2C(scl=Pin(5), sda=Pin(4), freq=20000)
 >>> i2c.scan()
 ```
 
@@ -436,8 +433,8 @@ Connections:
 WeMos D1 Mini (ESP8266) | AM2320 | Description
 ----------------------- | ------ | ------------
 3V3                     | 1 VDD  | 3.3V
-D4 (GPIO2)              | 2 SDA  | Serial data
-D3 (GPIO0)              | 3 SCL  | Serial clock
+D2 (GPIO4)              | 2 SDA  | Serial data
+D1 (GPIO5)              | 3 SCL  | Serial clock
 G                       | 4 GND  | Ground
 
 Connect two pull-up resistors for I2C between 3V3-SDA and 3V3-SCL.
@@ -448,7 +445,7 @@ Test the AM2320 sensor:
 >>> from machine import I2C, Pin
 >>> import am2320
 
->>> i2c = I2C(scl=Pin(0), sda=Pin(2), freq=20000)
+>>> i2c = I2C(scl=Pin(5), sda=Pin(4), freq=20000)
 >>> i2c.scan()
 ```
 
@@ -469,12 +466,11 @@ Display the temperature and humidity on the Nokia 5110 display, updated every 4 
 
 ## Links
 
+* [MicroPython PCD8544 Driver](https://github.com/mcauser/micropython-pcd8544)
+* [MicroPython DHT12 Driver](https://github.com/mcauser/micropython-dht12)
+* [MicroPython AM2320 Driver](https://github.com/mcauser/micropython-am2320)
 * [WeMos D1 Mini](http://www.wemos.cc/Products/d1_mini.html)
 * [micropython.org](http://micropython.org)
 * [Hardware SPI docs](http://docs.micropython.org/en/latest/esp8266/esp8266/quickref.html#hardware-spi-bus)
 * [micropython issue](https://github.com/micropython/micropython/issues/2290)
 * [hackaday project](https://hackaday.io/project/13363-dht12-am2320-nokia-5110)
-
-## Credits
-
-* Markus Birth's [wipy Nokia 5110 library](https://github.com/mbirth/wipy-upcd8544) (MIT license) with [my ESP8266 modifications](https://github.com/mbirth/wipy-upcd8544/issues/1).

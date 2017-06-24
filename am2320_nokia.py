@@ -2,7 +2,7 @@ import time, ustruct
 from machine import I2C, Pin, SPI
 
 # Nokia 5110
-import upcd8544, framebuf
+import pcd8544, framebuf
 
 # Temp sensor
 import am2320
@@ -17,18 +17,18 @@ dht = am2320.AM2320(i2c)
 
 # Initialise SPI for display
 spi = SPI(1, baudrate=80000000, polarity=0, phase=0)
-RST = Pin(4)
-CE = Pin(5)
-DC = Pin(12)
-BL = Pin(16)
-lcd = upcd8544.PCD8544(spi, RST, CE, DC, BL)
+cs = Pin(2)
+dc = Pin(15)
+rst = Pin(0)
+
+# backlight on
+bl = Pin(12, Pin.OUT, value=1)
+
+lcd = pcd8544.PCD8544(spi, cs, dc, rst)
 
 # Initialise framebuffer for display
-width = 84
-height = 48
-pages = height // 8
-buffer = bytearray(pages * width)
-framebuf = framebuf.FrameBuffer1(buffer, width, height)
+buffer = bytearray((lcd.height // 8) * lcd.width)
+framebuf = framebuf.FrameBuffer1(buffer, lcd.width, lcd.height)
 
 # Update display
 while(True):
