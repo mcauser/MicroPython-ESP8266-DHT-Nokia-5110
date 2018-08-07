@@ -22,6 +22,8 @@ The DHT12 and AM2320 sensors have the same pins:
 * 3 GND
 * 4 SCL
 
+(left to right, grill facing you)
+
 Using D1 + D2 for I2C on the WeMos D1 Mini.
 
 * D1 = GPIO5 = SCL
@@ -139,7 +141,7 @@ $ screen /dev/tty.wchusbserial1420 115200
 
 Click your hardware Reset button or `Control+D` in screen.
 
-```
+```python
 (lots of funny characters) ets_task(40100390, 3, 3fff6300, 4)
 could not open file 'main.py' for reading
 
@@ -150,7 +152,7 @@ Type "help()" for more information.
 
 Check the firmware md5 matches. You should see True. If not, `erase_flash` and `write_flash` again, or try different `write_flash` arguments after reading the [esptool](https://github.com/themadinventor/esptool/) readme.
 
-```
+```python
 >>> import esp
 >>> esp.check_fw()
 size: 531032
@@ -172,7 +174,7 @@ Reboot with WebREPL disabled and the scripts has enough resources to run.
 
 The default settings will give your device the ip 192.168.4.1
 
-```
+```python
 >>> import network
 >>> ap_if = network.WLAN(network.AP_IF)
 >>> ap_if.active(True)
@@ -180,14 +182,14 @@ The default settings will give your device the ip 192.168.4.1
 
 Yep, it's 192.168.4.1. (ip,netmask,gateway,dns)
 
-```
+```python
 >>> ap_if.ifconfig()
 ('192.168.4.1', '255.255.255.0', '192.168.4.1', '208.67.222.222')
 ```
 
 ### Start WebREPL
 
-```
+```python
 >>> import webrepl
 >>> webrepl.start()
 WebREPL daemon started on ws://192.168.4.1:8266
@@ -202,7 +204,7 @@ Join the MicroPython-xxxxxx network. Password is `micropythoN`. Uppercase N is n
 
 You should see something like this in the REPL:
 
-```
+```python
 >>> add 1
 aid 1
 station: 78:31:c1:bb:cc:dd join, AID = 1
@@ -239,7 +241,7 @@ Later, to make it always on, you can add the start command to boot.py. In this c
 
 Switch back to your terminal and start WebREPL again
 
-```
+```python
 >>> import webrepl
 >>> webrepl.start()
 WebREPL daemon started on ws://192.168.4.1:8266
@@ -248,7 +250,7 @@ Started webrepl in normal mode
 
 Notice this time, it says `normal mode`. FYI - the WebREPL password you entered is saved in `port_config.py` in the root.
 
-```
+```python
 >>> import os
 >>> os.listdir()
 ['boot.py', 'port_config.py']
@@ -256,7 +258,7 @@ Notice this time, it says `normal mode`. FYI - the WebREPL password you entered 
 
 Click `Connect` and enter your password.
 
-```
+```python
 Welcome to MicroPython!
 Password:
 WebREPL connected
@@ -273,14 +275,14 @@ Repeat for the files `dht12.py`, `dht12_nokia.py`, `am2320.py` and `am2320_nokia
 
 Click `Disconnect`. Click your hardware Reset button, or use `machine.reset()`.
 
-```
+```python
 >>> import machine
 >>> machine.reset()
 ```
 
 After rebooting, if you do not need the Access Point anymore, you can disable it with:
 
-```
+```python
 >>> import network
 >>> ap_if = network.WLAN(network.AP_IF)
 >>> ap_if.active(False)
@@ -309,7 +311,7 @@ G                       | 7 Gnd                  | Ground
 
 Test the display:
 
-```
+```python
 >>> from machine import Pin, SPI
 >>> import time
 >>> import pcd8544
@@ -326,19 +328,19 @@ Test the display:
 
 Switch off the backlight:
 
-```
+```python
 >>> bl.value(0)
 ```
 
 Switch on the backlight:
 
-```
+```python
 >>> bl.value(1)
 ```
 
 Use a framebuffer to store the 4032 pixels (84x48):
 
-```
+```python
 >>> import framebuf
 >>> buffer = bytearray((lcd.height // 8) * lcd.width)
 >>> framebuf = framebuf.FrameBuffer1(buffer, lcd.width, lcd.height)
@@ -346,21 +348,21 @@ Use a framebuffer to store the 4032 pixels (84x48):
 
 Light every pixel:
 
-```
+```python
 >>> framebuf.fill(1)
 >>> lcd.data(buffer)
 ```
 
 Clear screen:
 
-```
+```python
 >>> framebuf.fill(0)
 >>> lcd.data(buffer)
 ```
 
 Print `Hello, World!` using the 8x8 font:
 
-```
+```python
 >>> framebuf.text("Hello,", 0, 0, 1)
 >>> framebuf.text("World!", 0, 9, 1)
 >>> lcd.data(buffer)
@@ -394,7 +396,7 @@ Connect two pull-up resistors for I2C between 3V3-SDA and 3V3-SCL.
 
 Test the DHT12 sensor:
 
-```
+```python
 >>> from machine import I2C, Pin
 >>> import dht12
 
@@ -404,7 +406,7 @@ Test the DHT12 sensor:
 
 You should see sensor at [92]
 
-```
+```python
 dht = DHT12(i2c)
 dht.measure()
 dht.temperature()
@@ -413,7 +415,7 @@ dht.humidity()
 
 Display the temperature and humidity on the Nokia 5110 display, updated every 4 seconds:
 
-```
+```python
 >>> import dht12_nokia
 ```
 
@@ -441,7 +443,7 @@ Connect two pull-up resistors for I2C between 3V3-SDA and 3V3-SCL.
 
 Test the AM2320 sensor:
 
-```
+```python
 >>> from machine import I2C, Pin
 >>> import am2320
 
@@ -451,7 +453,7 @@ Test the AM2320 sensor:
 
 You should see sensor at [92]
 
-```
+```python
 >>> dht = AM2320(i2c)
 >>> dht.measure()
 >>> dht.temperature()
@@ -460,7 +462,7 @@ You should see sensor at [92]
 
 Display the temperature and humidity on the Nokia 5110 display, updated every 4 seconds:
 
-```
+```python
 >>> import am2320_nokia
 ```
 
@@ -474,3 +476,7 @@ Display the temperature and humidity on the Nokia 5110 display, updated every 4 
 * [Hardware SPI docs](http://docs.micropython.org/en/latest/esp8266/esp8266/quickref.html#hardware-spi-bus)
 * [micropython issue](https://github.com/micropython/micropython/issues/2290)
 * [hackaday project](https://hackaday.io/project/13363-dht12-am2320-nokia-5110)
+
+## License
+
+Licensed under the [MIT License](http://opensource.org/licenses/MIT).
